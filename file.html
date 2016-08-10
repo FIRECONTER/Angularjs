@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html ng-app="myapp">
+    <head>
+        <title>CORS实战</title>
+        <script type="text/javascript" src="angular.js"></script>
+        <!--Ajax技术只能够从同源站点获取数据，不能从非同源其他站点获取数据，因此解决这个问题需要使用跨域资源获取技术，目前有的是JSONP与CORS标准-->
+        <script type="text/javascript">
+        var app = angular.module('myapp',[]).config(function($httpProvider){
+            $httpProvider.defaults.useXDomain = true;
+            delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
+        });
+        app.controller('myco',function($scope,$http){
+           
+            $scope.getdata = function()
+            {
+                 var url="http://127.0.0.1:8080?callback=JSON_CALLBACK";//要网站能够支持JSONP数据获取
+              $http.jsonp(url).success(function(data){
+                     alert('ok');
+                     alert(typeof(data));
+                });
+               
+            };
+            $scope.dk = function(){
+                var url = 'http://127.0.0.1:3000/';
+                //cors
+                $http.get(url).success(function(data){
+                    //console.log('ok');
+                   
+                   
+                    //$scope.data = data;
+                    var jobjson = parseXML(data);
+                    if(jobjson)
+                    {
+                        //
+                    }
+                    else
+                    {
+                        console.log('err no data');
+                    }
+
+                }).error(function(data){
+                    console.log('err');
+
+                });
+
+
+            };
+        });
+
+        function parseXML(xmlString)
+        {
+            //parse the data
+            var jobjson={};
+            var namearr = [];
+            var xmlDoc =  loadXML(xmlString);
+            if(xmlDoc)
+                {
+                    var metadatas = xmlDoc.getElementsByTagName('metadata');
+                    for(var i=0;i<metadatas.length;i++)
+                    {
+                        var items = metadatas[i].getElementsByTagName('item');
+                        for(var j=0;j<items.length;j++)
+                        {
+                            namearr[j] = items[j].getAttribute('name');
+                            
+                        }
+                    }
+                    //console.log(namearr);
+                    var rowdatas = xmlDoc.getElementsByTagName('row');
+                    if(rowdatas)
+                    {
+                        for(var i=0;i<rowdatas.length;i++)
+                        {
+                            //encapsulation
+                            var valuenodes = rowdatas[i].getElementsByTagName('value');
+                            for(var j=0;j<valuenodes.length;j++)
+                            {
+                                 if(j==1) jobjson[namearr[j]] = valuenodes[j].firstChild.innerHTML;
+                                 else jobjson[namearr[j]] = valuenodes[j].innerHTML;
+
+                            }
+                        }
+                        //console.log(jobjson);
+                        return jobjson;
+                    }
+                    else return null;
+                }
+            else
+                {
+                    return null;
+                }
+
+            
+            
+        }
+
+        var loadXML = function(xmlString){ //构建xmldoc对象
+   
+             var xmlDoc=null;
+              
+              if(window.DOMParser)  //IE9+,FF,webkit
+              {
+                    try{
+                        
+                        domParser = new  DOMParser();
+                        xmlDoc = domParser.parseFromString(xmlString, 'text/xml');
+                    }catch(e){
+                    }
+                }
+                else if(!window.DOMParser && window.ActiveXObject)
+                {
+                    var xmlDomVersions = ['MSXML2.DOMDocument','Microsoft.XMLDOM'];
+                    for(var i=0;i<xmlDomVersions.length;i++){
+                        try{
+                            xmlDoc = new ActiveXObject(xmlDomVersions[i]);
+                            xmlDoc.async = false;
+                            xmlDoc.loadXML(xmlString);
+                            break;
+                        }catch(e){
+                            continue;
+                        }
+                    }
+                }
+                else{
+                    return null;
+                }
+
+                return xmlDoc;
+            }
+        </script>
+
+       
+    </head>
+    <body>
+         <div ng-controller="myco">
+            <h4>使用jsonp完成跨域资源访问</h4>
+            <button >获取网站数据</button>
+            <p>{{data}}</p>
+
+            <h4>使用cros完成跨域问题</h4>
+            <button ng-click="dk()">使用cros完成跨域问题</button>
+            <p>{{data}}</p>
+        </div>
+
+        <div>
+            <!--使用CORS的方式获取实现跨域获取数据-->
+        </div>
+    </body>
+</html>

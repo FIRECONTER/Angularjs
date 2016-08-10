@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset xmlns="xxxx">
+    <!--
+        <dataset xmlns="XXX"></dataset>
+
+    -->
+    <metadata>
+        <item name="Match Strength" type="xs:string" length="14"/>
+        <item name="Job ID" type="xs:string" length="540"/>
+        <item name="Title" type="xs:string" length="402"/>
+        <item name="Band" type="xs:string" length="16"/>
+        <item name="BU" type="xs:string" length="42"/>
+        <item name="Country" type="xs:string" length="52"/>
+        <item name="City" type="xs:string" length="102"/>
+    </metadata>
+    <data>
+        <row>
+            <value>High</value>
+            <value><a href="">32257BR</a></value>
+            <value>Technical Support Professional</value>
+            <value>07     </value>
+            <value>Systems        </value>
+            <value>CHINA            </value>
+        </row>
+
+        <row>
+            <value>High</value>
+            <value><a href="">32257BR</a></value>
+            <value>Technical Support Professional</value>
+            <value>07     </value>
+            <value>Systems        </value>
+            <value>CHINA            </value>
+        </row>
+
+    </data>
+</dataset>
